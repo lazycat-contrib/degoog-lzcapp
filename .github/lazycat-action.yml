@@ -1,0 +1,43 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: dist/degoog.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  allow_downgrade: false
+  version_source:
+    type: image
+    image: app
+
+build:
+  toolchains: []
+  run_buildscript: false
+
+images:
+  # 镜像模式（delivery.mode=mirror）：只读校验，把 manifest 里的镜像改写成加速地址
+  # （GHCR → ghcr.1ms.run），不把镜像搬到懒猫镜像源；因此也不能上官方商店。
+  - id: app
+    target: service
+    service: degoog
+    source: ghcr.io/degoog-org/degoog
+    channel: stable
+    sort: semver
+    # 只跟三段式正式版（排除 1.1.0-amd64/-arm64 变体、develop/main/latest）
+    tag_regex: '^[0-9]+\.[0-9]+\.[0-9]+$'
+    delivery:
+      mode: mirror
+      require_digest_match: true
+
+stores:
+  official:
+    enabled: false
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: Degoog
+    summary: "Degoog 懒猫微服打包：搜索引擎聚合器，多引擎去重合并 + 插件系统，设置密码保护管理动作。"

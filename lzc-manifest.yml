@@ -1,0 +1,48 @@
+application:
+  subdomain: degoog
+  multi_instance: false
+  upstreams:
+    - location: /
+      backend: http://degoog:4444
+  # 入口直接放行（不过微服账号）：应用自带的设置密码会把管理动作挡住
+  public_path:
+    - /
+services:
+  degoog:
+    # 镜像模式：Action 只读校验后把这行改写成加速地址（GHCR → ghcr.1ms.run）
+    # upstream: ghcr.io/degoog-org/degoog:1.1.0
+    image: ghcr.io/degoog-org/degoog:1.1.0
+    # 入口脚本以 root 起：先 mkdir + chown /app/data，再 su-exec 到 PUID/PGID(默认 1000)。
+    # 平台建的 /lzcapp/var/degoog 属主是 root，所以这里必须以 root 起（不用 run_as）
+    user: root
+    environment:
+      # 安装时填的设置密码：保护「设置」与插件仓库。未上锁的实例任何人都能装插件
+      # （插件在服务器上执行代码），所以这里必须设置；留空等于不设防，请勿留空。
+      DEGOOG_SETTINGS_PASSWORDS: '{{ .U.settings_password }}'
+      # 微服域名访问不是"本地网络"，强制所有管理/插件动作都走密码
+      DEGOOG_PUBLIC_INSTANCE: "true"
+    healthcheck:
+      # 镜像自带 curl 与 /readyz 端点（与镜像自己的 HEALTHCHECK 一致）
+      test:
+        - CMD-SHELL
+        - curl -fsS http://127.0.0.1:4444/readyz || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    binds:
+      - /lzcapp/var/degoog:/app/data
+usage: |
+  Degoog 是搜索引擎聚合器：一次查询多个引擎、去重合并结果；支持自定义引擎、
+  bang 命令、结果页插件（slot）以及自定义取数方式（curl / FlareSolverr / 自研）。
+  内置插件与引擎仓库，可在「设置」里浏览安装。
+
+  【设置密码（重要）】
+  安装时填的密码保护「设置」和插件安装——未上锁的实例任何人都能装插件，而插件
+  是在服务器上执行代码的。所以：**别留空**。用应用域名访问时已强制走密码校验
+  （DEGOOG_PUBLIC_INSTANCE=true），不会因为是"内网"就放行。
+
+  【数据】
+  设置、SQLite 索引、已装插件都在 /lzcapp/var/degoog，升级不丢。
+  实例是单容器、内存缓存模式（只适合个人/低流量）；要多副本或高流量再考虑
+  Valkey/Postgres 的组合。

@@ -1,0 +1,20 @@
+params:
+    - id: settings_password
+      type: secret
+      name: "Settings password"
+      description: "Password protecting the settings and plugin store. REQUIRED if this instance is reachable at all — an unlocked instance lets anyone install plugins, which runs code on the server."
+      default_value: ""
+
+locales:
+    zh:
+        settings_password:
+            name: "设置密码"
+            description: "保护「设置」与插件安装的密码。必填：未上锁的实例任何人都能装插件，而插件会在服务器上执行代码。"
+    zh_CN:
+        settings_password:
+            name: "设置密码"
+            description: "保护「设置」与插件安装的密码。必填：未上锁的实例任何人都能装插件，而插件会在服务器上执行代码。"
+    en:
+        settings_password:
+            name: "Settings password"
+            description: "Password protecting settings and plugin installs. Required: an unlocked instance lets anyone install plugins, which run code on the server."

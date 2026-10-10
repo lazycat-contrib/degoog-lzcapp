@@ -1,0 +1,18 @@
+package: cloud.lazycat.app.degoog
+version: 1.1.0
+name: Degoog
+description: Search engine aggregator with a comprehensive plugin/extension system — query multiple engines at once, customize engines and result-page plugins. AGPL-3.0.
+min_os_version: 1.5.0
+homepage: https://github.com/degoog-org/degoog
+author: degoog-org
+license: AGPL-3.0
+locales:
+  zh:
+    name: "Degoog"
+    description: "搜索引擎聚合器：一次查询多个引擎、去重合并；支持自定义引擎、bang 命令与结果页插件。"
+  zh_CN:
+    name: "Degoog"
+    description: "搜索引擎聚合器：一次查询多个引擎、去重合并；支持自定义引擎、bang 命令与结果页插件。"
+  en:
+    name: "Degoog"
+    description: "Search engine aggregator: query multiple engines at once, with custom engines, bangs and result-page plugins."
