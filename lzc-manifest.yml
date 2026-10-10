@@ -11,7 +11,7 @@ services:
   degoog:
     # 镜像模式：Action 只读校验后把这行改写成加速地址（GHCR → ghcr.1ms.run）
     # upstream: ghcr.io/degoog-org/degoog:1.1.0
-    image: ghcr.io/degoog-org/degoog:1.1.0
+    image: ghcr.1ms.run/degoog-org/degoog:1.1.0
     # 入口脚本以 root 起：先 mkdir + chown /app/data，再 su-exec 到 PUID/PGID(默认 1000)。
     # 平台建的 /lzcapp/var/degoog 属主是 root，所以这里必须以 root 起（不用 run_as）
     user: root
